@@ -1,0 +1,8 @@
+
+collectdata [profile] [dataset_name] [num_of_samples]
+train       [profile] [model_name] [num_of_sets] [[dataset], [...], ...]
+predict     [profile] [model_name]
+
+collectdata - collects data from serial port and creates a dataset
+train       - trains model on collected datasets
+predict     - reads data from serial port and predicts based on model
