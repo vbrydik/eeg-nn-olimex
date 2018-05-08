@@ -2,11 +2,14 @@ import os
 import pickle
 import time
 import datetime
-from settings import BASE_DIR
-from tools.data_generator import generate_random_train_data
+import configparser
+import serialReader
 
-# Path of all datasets
+from settings import BASE_DIR, CONFIG_FILE
+from tools.config_extract import configExtract
+
 datasets_path = os.path.join(BASE_DIR, 'datasets')
+Config = configparser.ConfigParser()
 
 
 # Generates dataset path with timestamp and index
@@ -29,13 +32,36 @@ def collect_data(args=None):
     dataset_name = args[1]
     n_samples = int(args[2])
 
+    Config.read(CONFIG_FILE)
+    nn_conf = configExtract(Config, 'NeuralNetworkData')
+    n_inputs = int(nn_conf['inputs'])
+
+    serial_conf = configExtract(Config, 'SerialData')
+    serial_port = serial_conf['port']
+    serial_rate = serial_conf['baud_rate']
+    serial_data_len = int(serial_conf['data_len'])
+    serial_packets = int(n_inputs / serial_data_len)
+
+    serial = serialReader.SerialReader()
+    serial.open(serial_port, serial_rate)
+
     # Collects data until we have wanted ammount of data
     data = []
     while len(data) != n_samples:
         print("\r> Collecting: {: 5} / {: 5}".format(
             len(data) + 1, n_samples), end="")
-        # TODO: replace with serial data collection!
-        data.append(generate_random_train_data(1)[0])
+
+        v, c, serial_data, s = serial.read(serial_packets)
+        append_data = []
+
+        for _d in serial_data:
+            for d in _d:
+                d = d / 1023
+                append_data.append(d)
+
+        data.append(append_data)
+
+    serial.close()
 
     dataset_dir = os.path.join(datasets_path, profile)
 

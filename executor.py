@@ -1,8 +1,10 @@
 import os
 
-from trainmodel import train
-from collectdata import collect_data
-from predict import predict
+import trainmodel
+import collectdata
+import predict
+import configedit
+
 from settings import BASE_DIR
 
 help_file = os.path.join(BASE_DIR, 'help.txt')
@@ -18,11 +20,23 @@ def help_print(args=None):
 
 
 COMMANDS = {
-    'collectdata':  'collect_data',
-    'train':        'train',
-    'predict':      'predict',
-    'help':         'help_print',
-    'cls':          'clear_scr',
+    # main functions
+    'collectdata':    'collectdata.collect_data',
+    'train':          'trainmodel.train',
+    'predict':        'predict.predict',
+    # helper functions
+    'help':           'help_print',
+    'cls':            'clear_scr',
+    # print functions
+    'print_config':   'configedit.printConfig',
+    'print_datasets': 'configedit.printDatasets',
+    'print_models':   'configedit.printModels',
+    # config functions
+    'set_port':       'configedit.setPort',
+    'set_rate':       'configedit.setRate',
+    'set_epochs':     'configedit.setEpochs',
+    'set_layer':      'configedit.setLayerNeurons',
+    'set_batchsize':  'configedit.setBatchSize',
 }
 
 

@@ -44,13 +44,12 @@ featureset = [
 
 import numpy as np
 
-n_channels = 6
 
-
-def generate_random_train_data(n_of_data):
+def generate_random_train_data(n_of_data, n_inputs):
     fs = []
+
     for i in range(n_of_data):
-        f = np.random.rand(n_channels)
+        f = np.random.rand(n_inputs)
         f = list(f)
         fs.append(f)
 

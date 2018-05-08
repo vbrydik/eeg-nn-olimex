@@ -6,3 +6,12 @@ predict     [profile] [model_name]
 collectdata - collects data from serial port and creates a dataset
 train       - trains model on collected datasets
 predict     - reads data from serial port and predicts based on model
+
+print_models   [profile] - prints profiles models
+print_datasets [profile] - prints profiles datasets 
+print_config             - prints config file
+set_port   [port]        - sets serial port
+set_rate   [rate]        - sets serial baud rate
+set_epochs    [n]        - sets neural networks epochs number
+set_layer [l] [n]        - sets neural networks [l]'s layer number of neurons
+set_batchsize [n]        - sets neural networks batch size

@@ -38,12 +38,13 @@ class NNHistory(Callback):
         pass
 
 
-def do_train(train_x, train_y, test_x, test_y, model_name, profile):
+def do_train(train_x, train_y, test_x, test_y, model_name, profile, classes):
     num_inputs = len(train_x[0])
     num_outputs = len(train_y[0])
 
     Config.read(CONFIG_FILE)
     config = configExtract(Config, 'NeuralNetworkData')
+    Config.clear()
 
     batch_size = int(config['batch_size'])
     epochs = int(config['epochs'])
@@ -77,12 +78,21 @@ def do_train(train_x, train_y, test_x, test_y, model_name, profile):
     print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
 
     # Getting models path
-    models_path = os.path.join(BASE_DIR, 'models', profile, model_name)
-    json_path = os.path.join(models_path, model_name + '.json')
-    weights_path = os.path.join(models_path, model_name + '.h5')
-    conf_path = os.path.join(models_path, model_name + '.ini')
+    models_path = os.path.join(BASE_DIR, 'models')
+    profile_path = os.path.join(models_path, profile)
+    model_path = os.path.join(profile_path, model_name)
+    json_path = os.path.join(model_path, model_name + '.json')
+    weights_path = os.path.join(model_path, model_name + '.h5')
+    conf_path = os.path.join(model_path, model_name + '.ini')
     print(json_path)
     print(weights_path)
+
+    if not os.path.exists(models_path):
+        os.mkdir(models_path)
+    if not os.path.exists(profile_path):
+        os.mkdir(profile_path)
+    if not os.path.exists(model_path):
+        os.mkdir(model_path)
 
     # Writing model to json file
     model_json = model.to_json()
@@ -96,6 +106,7 @@ def do_train(train_x, train_y, test_x, test_y, model_name, profile):
         Config.add_section('NetworkData')
     Config.set('NetworkData', 'inputs', str(num_inputs))
     Config.set('NetworkData', 'outputs', str(num_outputs))
+    Config.set('NetworkData', 'classes', classes)
     Config.write(conf_file)
     conf_file.close()
 

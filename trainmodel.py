@@ -10,9 +10,10 @@ datasets_dir = os.path.join(BASE_DIR, 'datasets')
 models_dir = os.path.join(BASE_DIR, 'models')
 
 
-def select_datasets_paths(profile, datasets_len, datasets_names, a):
+def select_datasets_paths_and_names(profile, datasets_len, args):
     # getting all datasets names
-    for d in a[3:]:
+    datasets_names = []
+    for d in args[3:]:
         datasets_names.append(d)
 
     # getting path of datasets
@@ -43,7 +44,7 @@ def select_datasets_paths(profile, datasets_len, datasets_names, a):
 
             cnt += 1
 
-    return datasets_paths_dict
+    return datasets_paths_dict, datasets_names
 
 
 def create_featureset(datasets_paths):
@@ -99,11 +100,10 @@ def train(args=None):
     datasets_names = []
 
     # Getting recent datasets paths of datasets
-    datasets_paths = select_datasets_paths(
-                        profile,
-                        datasets_len,
-                        datasets_names,
-                        args)
+    datasets_paths, datasets_names = select_datasets_paths_and_names(
+        profile,
+        datasets_len,
+        args)
 
     # Creating features datasets
     feature_set = create_featureset(datasets_paths)
@@ -112,5 +112,11 @@ def train(args=None):
     train_x, train_y, test_x, test_y = create_train_and_test_sets(
         feature_set, test_size=0)
 
+    # Getting classes names
+    classes = ''
+    for n in datasets_names:
+        classes += n + ' '
+
     # Training the network
-    network.do_train(train_x, train_y, test_x, test_y, model_name, profile)
+    network.do_train(
+        train_x, train_y, test_x, test_y, model_name, profile, classes)
